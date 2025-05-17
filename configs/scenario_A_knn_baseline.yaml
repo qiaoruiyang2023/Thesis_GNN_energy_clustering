@@ -1,0 +1,35 @@
+# Configuration for Scenario A KNN Baseline (no GNN/LSTM, direct feature clustering)
+
+# Inherits from base_config.yaml
+
+# --- Data Paths ---
+RAW_DATA_DIR: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/raw/"
+PROCESSED_DATA_DIR: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/processed/"
+BUILDINGS_DEMO_FILE: "buildings_demo.csv"
+BUILDING_ASSIGNMENTS_FILE: "building_assignments.csv"
+TIME_SERIES_LOADS_FILE: "time_series_loads_50b.csv"
+TRAIN_DATA_PATH: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/processed/train_data.csv"
+TEST_DATA_PATH: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/processed/test_data.csv" 
+
+# --- Scenario Definition ---
+SCENARIO_NAME: "Scenario_A_No_Constraint_KNN"  # 确保与数据文件名匹配
+SCENARIO_TYPE: 'A'
+
+# --- Results Directory ---
+RESULTS_DIR: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/results/Scenario_A_No_Constraint_KNN/"  # 修改为与场景名称一致
+
+# --- Graph Construction (not used in baseline, but kept for compatibility) ---
+GRAPH_TYPE: 'knn'            # Identifier for graph builder
+KNN_K: 10                    # Number of neighbors for k-NN graph
+KNN_METRIC: 'euclidean'      # Distance metric for k-NN
+
+# --- Clustering ---
+CLUSTER_METHOD: 'KMeans'     # Use KMeans for baseline clustering
+NUM_CLUSTERS_K: 6            # Number of clusters (should match main experiment)
+
+# --- Evaluation ---
+CHECK_FEASIBILITY_POST_CLUSTER: True
+
+
+
+

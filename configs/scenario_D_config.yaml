@@ -1,0 +1,15 @@
+# Configuration for Scenario D: Combined Feeder + Distance Constraint
+
+# Inherits from base_config.yaml
+
+# --- Scenario Definition ---
+SCENARIO_NAME: "Scenario_D_Combined_Constraint"
+SCENARIO_TYPE: 'D'
+
+# --- Graph Construction (Scenario D Specific) ---
+GRAPH_TYPE: 'combined'       # Identifier for graph builder
+DISTANCE_THRESHOLD_KM: 0.5   # Max distance for edge creation (use same as C for comparison)
+
+# --- Evaluation ---
+# Feasibility constraints (feeder + distance) are inherently met by the graph structure
+CHECK_FEASIBILITY_POST_CLUSTER: False

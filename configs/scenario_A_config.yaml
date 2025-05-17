@@ -1,0 +1,28 @@
+# Configuration for Scenario A: No Constraints (k-NN Graph)
+
+# Inherits from base_config.yaml
+
+# --- Scenario Definition ---
+SCENARIO_NAME: "Scenario_A_No_Constraint_KNN"
+SCENARIO_TYPE: 'A'
+
+# --- Graph Construction (Scenario A Specific) ---
+GRAPH_TYPE: 'knn'            # Identifier for graph builder
+KNN_K: 10                    # Number of neighbors for k-NN graph
+# KNN_FEATURE_SET: 'static' # Optional: Specify features if needed by graph builder (currently uses all processed static)
+KNN_METRIC: 'euclidean'      # Distance metric for k-NN
+
+# --- Evaluation ---
+# Check feasibility against distance and feeder constraints POST clustering
+CHECK_FEASIBILITY_POST_CLUSTER: True
+
+# --- Time Series Configuration ---
+TIME_SERIES_CONFIG:
+  START_TIME: '00:00:00'
+  END_TIME: '23:45:00'
+  INTERVAL: '15min'
+  MAX_SEQUENCE_LENGTH: 96  # 24小时 * 4（每小时4个15分钟间隔）
+
+# --- Data Split Configuration ---
+TEST_SIZE: 0.2  # 测试集比例
+TRAIN_TEST_SPLIT_SEED: 42  # 随机种子

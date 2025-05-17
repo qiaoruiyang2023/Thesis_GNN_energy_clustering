@@ -1,0 +1,117 @@
+# Base Configuration for Energy Clustering GNN Project
+
+# --- File Paths ---
+# Relative to project root: D:\Documents\energy_cluster_gnn\
+RAW_DATA_DIR: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/raw/"
+PROCESSED_DATA_DIR: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/processed/"
+RESULTS_DIR: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/results/"
+
+BUILDINGS_DEMO_FILE: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/raw/buildings_demo.csv"
+BUILDING_ASSIGNMENTS_FILE: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/raw/building_assignments.csv"
+# --- IMPORTANT: Update this if you permanently use the renamed file ---
+TIME_SERIES_LOADS_FILE: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/raw/time_series_loads_50b_renamed.csv" # Or "time_series_loads_50b.csv" if using original
+
+# --- Data Processing ---
+# Note: Ensure building IDs are consistent across files
+NET_LOAD_DEFINITION: 'total_electricity' # Options: 'total_electricity', 'detailed' (if implemented)
+FEATURE_SCALING_METHOD: 'StandardScaler' # Method for numerical static features ('StandardScaler', 'MinMaxScaler', None)
+TIME_SERIES_FREQUENCY: '15min' # Frequency of time series data (used for reconstructing timestamps)
+IMPUTATION_METHOD: 'zero' # Method for imputing NaNs in dynamic features ('zero', 'ffill', 'mean')
+
+# --- Data Split ---
+TRAIN_TEST_SPLIT: 0.8 # 80% for training, 20% for testing
+TRAIN_DATA_PATH: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/processed/train_data.csv"
+TEST_DATA_PATH: "D:/GEO2020_Thesis/energy_cluster_gnn_v02/energy_cluster_gnn/data/processed/test_data.csv"
+
+# --- General ---
+SEED: 42 # For reproducibility
+
+# --- Model Hyperparameters ---
+MODEL_NAME: 'GATLSTMEmbedder' # Class name in models.py
+EMBEDDING_DIM: 64          # Dimension of the final node embeddings
+GNN_HIDDEN_DIM: 128         # Hidden dimension for GNN layers
+GNN_LAYERS: 2               # Number of GNN layers
+GNN_HEADS: 4                # Number of attention heads for GAT
+LSTM_HIDDEN_DIM: 128        # Hidden dimension for LSTM layers
+LSTM_LAYERS: 1              # Number of LSTM layers
+DROPOUT_RATE: 0.3           # Dropout rate
+
+# --- Model Ablation Flags (for ablation studies) ---
+# NOTE: models.py needs to be updated to use these flags
+MODEL_USE_LSTM: True            # Whether to use the LSTM component
+MODEL_USE_GNN: True             # Whether to use the GNN component
+MODEL_USE_STATIC_FEATURES: True # Whether to concatenate static features in GNN input
+
+# --- Training Hyperparameters ---
+OPTIMIZER: 'AdamW'           # Optimizer name ('AdamW', 'Adam')
+LEARNING_RATE: 0.001         # Learning rate
+WEIGHT_DECAY: 0.0001         # Weight decay (L2 regularization)
+EPOCHS: 10                   # Number of training epochs (Reduced from 50 for faster runs, adjust as needed)
+TRAINING_BATCH_SIZE: 1       # Batch size for DataLoader (PyG usually uses 1 for full graph)
+DATALOADER_WORKERS: 0        # Number of worker processes for DataLoader (0 for main process)
+LOSS_FUNCTION: 'ContrastiveLoss' # Loss function name
+CONTRASTIVE_MARGIN: 1.0      # Margin for contrastive loss
+LOSS_EMBEDDING_SOURCE: 'last' # Which embedding to use for loss ('last', 'mean')
+NEGATIVE_SAMPLING_STRATEGY: 'random' # Strategy for contrastive loss ('random')
+
+# --- Clustering Hyperparameters ---
+CLUSTER_METHOD: 'SpectralClustering' # Clustering algorithm ('KMeans', 'SpectralClustering')
+NUM_CLUSTERS_K: 6            # Target number of clusters (used when K selection is disabled)
+EMBEDDING_SMOOTHING_WINDOW_W: 4 # Num steps for moving average smoothing (e.g., 4 * 15min = 1 hour). 1 to disable.
+SCALE_EMBEDDINGS_BEFORE_CLUSTERING: False # Whether to scale smoothed embeddings before clustering
+
+# --- Cluster Number (K) Selection ---
+CLUSTER_K_SELECTION_ENABLED: False   # If true, run clustering for a range of K
+CLUSTER_K_SELECTION_RANGE: [3, 10] # List [min_k, max_k] to test if enabled
+# Note: Code in clustering.py and visualization.py needs updating to use these
+
+# --- Evaluation Parameters ---
+# Metrics to calculate (keys should match function outputs in evaluation.py)
+STABILITY_METRICS: ['ARI', 'NMI', 'ChurnRate']
+SYNERGY_METRICS: ['ClusterSSR', 'ClusterNetImport'] # Removed 'ClusterSurplusUtilization' unless implemented
+QUALITY_METRICS: ['Silhouette']
+FEASIBILITY_CHECK_DISTANCE_THRESHOLD_KM: 0.5 # Used for evaluating distance feasibility violations
+# Note: CHECK_FEASIBILITY_POST_CLUSTER is defined per scenario config
+
+# --- Visualization Parameters ---
+# General Flags
+SAVE_PLOTS: True             # Master switch for saving any plots
+
+# GIF Controls
+VIZ_GENERATE_GIF: True       # Generate cluster evolution GIF
+VIZ_GIF_PLOT_EVERY_N_STEPS: 5 # Plot every Nth time step in the GIF to reduce size/memory
+VIZ_GIF_FRAME_DURATION: 0.3  # Duration (seconds) per frame in the GIF
+
+# Evaluation Summary Plot
+VIZ_PLOT_SUMMARY: True       # Generate evaluation summary bar chart
+
+# Embedding Plots
+VIZ_PLOT_TSNE: True          # Generate t-SNE plot for specific time step(s)
+VIZ_PLOT_UMAP: False         # Generate UMAP plot (requires 'umap-learn' install)
+VIZ_EMBEDDING_TIMESTEPS: ['middle'] # Which time steps ('first', 'middle', 'last', or list of indices [0, 24, 47])
+VIZ_TSNE_COLOR_FEATURES: ['line_id', 'building_function'] # List of static features to color t-SNE by (or None)
+SCALE_EMBEDDINGS_BEFORE_TSNE: True # Scale embeddings before t-SNE/UMAP
+# VIZ_INTERACTIVE_PLOTS: False # Placeholder: Requires plotly/bokeh implementation
+
+# Cluster Profile Plots
+VIZ_PLOT_AVG_TS: True        # Plot average net load time series per cluster
+VIZ_PLOT_COMPOSITION: True   # Plot static feature composition per cluster
+VIZ_PLOT_GEO_SHAPES: False   # Plot geographic cluster shapes (requires shapely)
+
+# Metric Time Series Plots
+VIZ_PLOT_METRIC_TS: True     # Plot stability/synergy metrics over time (requires evaluation.py update)
+
+# Transition Plots
+VIZ_PLOT_TRANSITIONS: True   # Plot cluster transition heatmap (requires evaluation.py update)
+
+# Graph Plot
+VIZ_PLOT_GRAPH: False        # Plot the graph structure (slow for large graphs, requires networkx)
+
+
+# --- Output Control ---
+SAVE_PROCESSED_DATA: True    # Save processed dataframes (static/dynamic)
+SAVE_GRAPH_OBJECT: True      # Save the constructed PyG graph object
+SAVE_MODEL: True             # Save the trained model state dictionary
+SAVE_CLUSTER_ASSIGNMENTS: True # Save the final cluster assignments CSV
+SAVE_EVALUATION_METRICS: True  # Save the evaluation metrics JSON and summary TXT
+VERBOSE: True                # Enables info logging (debug logging not controlled here)

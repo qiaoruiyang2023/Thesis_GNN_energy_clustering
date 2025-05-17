@@ -1,0 +1,15 @@
+# Configuration for Scenario C: Distance Constraint
+
+# Inherits from base_config.yaml
+
+# --- Scenario Definition ---
+SCENARIO_NAME: "Scenario_C_Distance_Constraint"
+SCENARIO_TYPE: 'C'
+
+# --- Graph Construction (Scenario C Specific) ---
+GRAPH_TYPE: 'distance'       # Identifier for graph builder
+DISTANCE_THRESHOLD_KM: 0.5   # Max distance for edge creation (example value)
+
+# --- Evaluation ---
+# Check feasibility against feeder constraints POST clustering
+CHECK_FEASIBILITY_POST_CLUSTER: True

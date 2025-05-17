@@ -1,0 +1,15 @@
+# Configuration for Scenario B: Feeder Constraint
+
+# Inherits from base_config.yaml
+
+# --- Scenario Definition ---
+SCENARIO_NAME: "Scenario_B_Feeder_Constraint"
+SCENARIO_TYPE: 'B'
+
+# --- Graph Construction (Scenario B Specific) ---
+GRAPH_TYPE: 'feeder'         # Identifier for graph builder
+# No extra parameters needed, uses line_id from processed static features
+
+# --- Evaluation ---
+# Feasibility constraints (feeder) are inherently met by the graph structure
+CHECK_FEASIBILITY_POST_CLUSTER: False
